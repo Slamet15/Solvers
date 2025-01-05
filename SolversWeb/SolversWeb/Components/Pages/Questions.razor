@@ -1,0 +1,63 @@
+﻿@using SolversWeb.Data
+@using SolversCore.Models
+
+@page "/questions"
+@inject ApplicationDbContext DbContext
+
+<h3>Questions</h3>
+
+@if (questions == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var q in questions)
+        {
+            <li>@q.Title (Difficulty: @q.Difficulty)</li>
+        }
+    </ul>
+}
+
+<hr />
+<h4>Add new question</h4>
+<input @bind="newTitle" placeholder="Question title" />
+<input type="number" @bind="newDifficulty" />
+<p>
+    <button @onclick="AddQuestion1">Add111</button>
+</p>
+
+@code {
+    private List<Question>? questions;
+    private string newTitle = "";
+    private int newDifficulty = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("123");
+
+        // Загрузка списка вопросов
+        questions = DbContext.Questions.ToList();
+    }
+
+    private void AddQuestion1()
+    {
+        Console.WriteLine("123");
+        var question = new Question
+            {
+                Title = newTitle,
+                Content = "Some content",
+                Difficulty = newDifficulty
+            };
+        DbContext.Questions.Add(question);
+        DbContext.SaveChanges();
+
+        // Обновим список
+        questions = DbContext.Questions.ToList();
+
+        // Очистим поля
+        newTitle = "";
+        newDifficulty = 1;
+    }
+}
